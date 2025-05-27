@@ -1,7 +1,11 @@
 import ResetPasswordForm from '@/components/ResetPasswordForm'
 import React from 'react'
 
-const ResetPasswordPage = async ({ params }: { params: { token: string } }) => {
+interface PageProps {
+  params: Promise<{ token: string }>
+}
+
+const ResetPasswordPage = async ({ params }: PageProps) => {
   const { token } = await params;
   
   return (
