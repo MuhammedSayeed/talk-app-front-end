@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.APP_URL || 'https://talk-chat-app.vercel.app'),
+  metadataBase: new URL(process.env.APP_URL || 'https://talk-chat.vercel.app'),
   alternates: {
     canonical: "/",
   },
