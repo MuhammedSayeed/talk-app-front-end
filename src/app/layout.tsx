@@ -10,6 +10,7 @@ import { AuthProvider } from "@/context/auth/AuthProvider";
 import AnimatedGradientBackground from "@/components/animatedBackground/AnimatedBackground";
 import TopProgressBar from "@/components/ui/TopProgressBar";
 import NetworkStatus from "@/components/NetworkStatus";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.APP_URL || 'https://talk-app.vercel.app'),
+  metadataBase: new URL(process.env.APP_URL || 'https://talk-chat-app.vercel.app'),
   alternates: {
     canonical: "/",
   },
@@ -83,22 +84,22 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { 
+      {
         url: process.env.FAVICON_16_URL || "/favicon-16x16.png", // ✅ Using Cloudinary URL
-        sizes: "16x16", 
-        type: "image/png" 
+        sizes: "16x16",
+        type: "image/png"
       },
-      { 
+      {
         url: process.env.FAVICON_32_URL || "/favicon-32x32.png", // ✅ Using Cloudinary URL
-        sizes: "32x32", 
-        type: "image/png" 
+        sizes: "32x32",
+        type: "image/png"
       },
     ],
     apple: [
-      { 
+      {
         url: process.env.APPLE_TOUCH_ICON_URL || "/apple-touch-icon.png", // ✅ Using Cloudinary URL
-        sizes: "180x180", 
-        type: "image/png" 
+        sizes: "180x180",
+        type: "image/png"
       },
     ],
     other: [
@@ -143,7 +144,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <QueryProvider>
             <AuthProvider>
               <ChatProvider>
-                <TopProgressBar />
+                <Suspense fallback={null}>
+                  <TopProgressBar />
+                </Suspense>
                 <NetworkStatus />
                 <Toaster toastOptions={toastStyle} />
                 <AnimatedGradientBackground />
