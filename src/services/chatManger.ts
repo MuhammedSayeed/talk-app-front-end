@@ -29,7 +29,9 @@ export class ChatManager {
                 sender: message.sender,
                 content: message.content,
                 createdAt: message.createdAt,
-                type: message.type
+                type: message.type,
+                isRead : message.isRead,
+                _id : message._id
             }
         }
     }

@@ -5,7 +5,7 @@ import { isExactPublicPath, isPrivatePath, isPublicPathPrefix } from './utils/pr
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
   console.log("8", token);
-  
+
   const { pathname } = request.nextUrl;
 
   const isPublic = isExactPublicPath(pathname) || isPublicPathPrefix(pathname);
@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
   const redirectTo = (path: string) => NextResponse.redirect(new URL(path, request.url));
 
   if (token && isPublic) return redirectTo(AUTH_CONFIG.authenticatedRedirect);
-  
+
   if (!token && isPrivate) return redirectTo(AUTH_CONFIG.unauthenticatedRedirect);
 
   return NextResponse.next();
@@ -23,8 +23,12 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/',
-    ...AUTH_CONFIG.exactPublicPaths,
-    ...AUTH_CONFIG.publicPathPrefixes.map(prefix => `${prefix}/:path*`), 
-    ...AUTH_CONFIG.privatePathPrefixes.map(prefix => `${prefix}/:path*`)  
+    '/login',
+    '/register',
+    '/complete-auth',
+    '/forgot-password',
+    '/reset-password/:path*',
+    '/settings/:path*',
+    '/chats/:path*'
   ],
 };
