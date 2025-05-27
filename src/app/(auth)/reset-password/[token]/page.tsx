@@ -1,9 +1,23 @@
 import ResetPasswordForm from '@/components/ResetPasswordForm'
+import { Metadata } from 'next';
 import React from 'react'
 
 interface PageProps {
   params: Promise<{ token: string }>
 }
+export const metadata : Metadata = {
+  title: 'Reset Password',
+  description: 'Create a new password for your account to regain access.',
+  openGraph: {
+    title: 'Reset Password',
+    description: 'Securely reset your password and protect your account.',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Reset Password',
+    description: 'Create a new password for your account to regain access.',
+  },
+};
 
 const ResetPasswordPage = async ({ params }: PageProps) => {
   const { token } = await params;

@@ -4,7 +4,6 @@ import { isExactPublicPath, isPrivatePath, isPublicPathPrefix } from './utils/pr
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
-  console.log("8", token);
 
   const { pathname } = request.nextUrl;
 

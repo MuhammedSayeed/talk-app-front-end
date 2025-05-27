@@ -1,5 +1,21 @@
 import ForgotPasswordForm from '@/components/ForgotPasswordForm'
+import { Metadata } from 'next';
 import React from 'react'
+
+
+export const metadata: Metadata = {
+    title: "Forgot Password",
+    description: "Enter your email address to receive a password reset link for your Talk account.",
+    openGraph: {
+        title: "Forgot Password | Talk",
+        description: "Request a password reset link and regain access to your Talk account.",
+    },
+    twitter: {
+        card: "summary",
+        title: "Forgot Password | Talk",
+        description: "Reset your Talk password by requesting a secure email link.",
+    },
+};
 
 const ForgotPasswordPage = () => {
     return (

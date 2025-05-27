@@ -3,7 +3,16 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Login",
-  description: "Sign in to your account to access our platform talk",
+  description: "Sign in to your account to access our platform Talk",
+  openGraph: {
+    title: "Login | Talk",
+    description: "Access your Talk account and continue the conversation.",
+  },
+  twitter: {
+    card: "summary",
+    title: "Login | Talk",
+    description: "Securely log in to your Talk account and join the conversation.",
+  },
 }
 
 interface LoginPageProps {
