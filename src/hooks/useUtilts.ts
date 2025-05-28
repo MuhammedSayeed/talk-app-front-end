@@ -12,8 +12,6 @@ const useUtilts = () => {
 
     const handleError = (error: unknown) => {
         const errorObj = error as AxiosError<IErrorResponse>;
-        console.log(errorObj);
-        
         toast.error(errorObj.response?.data.message || "Something went wrong");
     };
 

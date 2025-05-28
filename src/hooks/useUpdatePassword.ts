@@ -10,6 +10,7 @@ import { AxiosError } from 'axios';
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import useCookies from './useCookies';
 
 const useUpdatePassword = () => {
     const { user, updateUserState } = useContext(AuthContext);
@@ -17,6 +18,9 @@ const useUpdatePassword = () => {
     const { register, reset, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(updatePasswordSchema)
     })
+    const {setToken} = useCookies();
+
+
     const passwordChangeInfo = useMemo(() => {
         if (!user?.passwordChangedAt) return { canChangePassword: true, date: null };
 
@@ -45,7 +49,10 @@ const useUpdatePassword = () => {
             setIsLoading(true)
             try {
                 const { status, data } = await axiosInstance.patch(`/users/password`, updatePasswordData);
-                if (status === 200) updateUserState("passwordChangedAt", data.results.passwordChangedAt);
+                if (status === 200) {
+                    setToken(data.results.token);
+                    updateUserState("passwordChangedAt", data.results.passwordChangedAt);
+                }
             } catch (error) {
                 const errorObj = error as AxiosError<IErrorResponse>;
                 throw errorObj.response?.data.message || "something went wrong";

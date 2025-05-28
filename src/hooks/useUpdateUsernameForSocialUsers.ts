@@ -10,10 +10,12 @@ import { AxiosError } from 'axios';
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import useCookies from './useCookies';
 
 const useUpdateUsernameForSocialUsers = () => {
     const { user, updateUserState } = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(false);
+    const {setToken} = useCookies();
 
     const { register, resetField, handleSubmit, watch, formState: { errors } } = useForm({
         resolver: yupResolver(updateUsernameSchemaForSocialUsers)
@@ -29,6 +31,7 @@ const useUpdateUsernameForSocialUsers = () => {
                 const { data, status } = await axiosInstance.patch(`/users/username`, updateUsernameData)
                 if (status === 200) {
                     updateUserState("username", data.results.username)
+                    setToken(data.results.token)
                 }
             } catch (error) {
                 const errorObj = error as AxiosError<IErrorResponse>;

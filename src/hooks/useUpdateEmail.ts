@@ -10,6 +10,7 @@ import { AxiosError } from "axios";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import useCookies from "./useCookies";
 
 
 interface IProps {
@@ -22,6 +23,10 @@ const useUpdateEmail = ({ onSuccess }: IProps) => {
     const { register, resetField, handleSubmit, watch, formState: { errors } } = useForm({
         resolver: yupResolver(updateEmailSchema)
     })
+    const { setToken } = useCookies();
+
+
+
     const emailChangeInfo = useMemo(() => {
         if (!user?.emailChangedAt) return { canChangeEmail: true, date: null };
 
@@ -43,9 +48,9 @@ const useUpdateEmail = ({ onSuccess }: IProps) => {
     const currentEmailValue = watch('email');
     const isEmailChanged = currentEmailValue !== user?.email;
     const canChangeEmail = emailChangeInfo.canChangeEmail;
-    const isDisabled = isLoading || !isCredentialUser  || !canChangeEmail
+    const isDisabled = isLoading || !isCredentialUser || !canChangeEmail
 
-    
+
 
     const updateEmail = useCallback(
         async (updateEmailData: IUpdateEmailFormData) => {
@@ -54,8 +59,10 @@ const useUpdateEmail = ({ onSuccess }: IProps) => {
 
                 const { data, status } = await axiosInstance.patch(`/users/email`, updateEmailData);
                 if (status === 200) {
+                    setToken(data.results.token);
                     updateUserState("email", data.results.email)
                     updateUserState("verified", data.results.verified)
+                    updateUserState("emailChangedAt", data.results.emailChangedAt)
                 }
             } catch (error) {
                 const errorObj = error as AxiosError<IErrorResponse>;

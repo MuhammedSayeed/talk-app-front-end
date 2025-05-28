@@ -21,15 +21,12 @@ const useTypingIndicator = () => {
     const sendTypingStatus = async (isTyping: boolean) => {
         if (!activeChat || !user) return;
         try {
-
-            const { status } = await axiosInstance.patch("/chats/typing", {
+            await axiosInstance.patch("/chats/typing", {
                 chatId: activeChat?._id,
                 isTyping,
                 userId: user?._id
             })
-            if (status === 200) {
-                console.log("typing status updated");
-            }
+            
         } catch (error) {
             handleError(error)
         }

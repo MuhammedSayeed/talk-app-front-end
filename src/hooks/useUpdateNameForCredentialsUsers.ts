@@ -10,6 +10,7 @@ import { AxiosError } from "axios"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
+import useCookies from "./useCookies"
 
 
 
@@ -20,12 +21,14 @@ const useUpdateNameForCredentialsUsers = () => {
     })
     const [isLoading, setIsLoading] = useState(false)
     const { updateUserState , user } = useContext(AuthContext);
+    const {setToken} = useCookies();
 
     const updateName = useCallback(async (updateNameData: IUpdateNameFormData): Promise<boolean> => {
         setIsLoading(true)
         try {
             const { data, status } = await axiosInstance.patch(`/users/name`, updateNameData);
             if (status === 200) {
+                setToken(data.results.token);
                 updateUserState("name", data.results.name);
                 return true;
             }

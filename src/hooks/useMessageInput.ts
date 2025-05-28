@@ -7,12 +7,14 @@ import { Message } from "@/types/messages";
 import { FormEvent, useCallback, useContext, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import useTypingIndicator from "./useTypingIndicator";
+import useUtilts from "./useUtilts";
 
 const useMessageInput = () => {
     const { activeChat } = useContext(ChatContext);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const { isTypingRef, sendTypingEvent } = useTypingIndicator();
     const [message, setMessage] = useState("");
+    const {handleError} = useUtilts()
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newMessage = e.target.value;
@@ -59,7 +61,7 @@ const useMessageInput = () => {
                 sendTypingEvent(false);
             }
         } catch (error) {
-            console.log(error);
+            handleError(error);
         }
     }
     const handleSendMessage = useCallback(async (e: FormEvent<HTMLFormElement>) => {

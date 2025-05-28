@@ -50,8 +50,6 @@ export const useMessageHandlers = ({ activeChat, fetchNewChat, scrollToBottom, s
     }, [activeChat, fetchNewChat, scrollToBottom, setChats, setMessages, setShouldScrollToBottom]);
 
     const handleDeleteChat = useCallback((chatId : string) => {
-        console.log(chatId);
-        
         if (activeChat?._id === chatId) {
             setActiveChat(null)
             setFriendInfo(null)

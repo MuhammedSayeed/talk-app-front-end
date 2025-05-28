@@ -29,8 +29,6 @@ const useUploadCoverPicture = () => {
         }
       } catch (error) {
         const errorObj = error as AxiosError<IErrorResponse>;
-        console.log(errorObj);
-        
         throw errorObj.response?.data.message || "something went wrong";
       } finally {
         setIsLoading(false)

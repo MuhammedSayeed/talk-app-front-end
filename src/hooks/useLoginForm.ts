@@ -7,23 +7,25 @@ import { IErrorResponse } from "@/interfaces/errors";
 import { ILoginFormData } from "@/interfaces/forms";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import useAuth from "./useAuth";
 
 const useLoginForm = () => {
-    const router = useRouter();
-    const { setUser , user } = useContext(AuthContext);
+    const { setUser } = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(false);
     const { register, handleSubmit, formState: { errors }, setFocus } = useForm({ resolver: yupResolver(loginSchema) });
+    const {handleSetToken} = useAuth();
+
 
     const signin = useCallback(async (authData: ILoginFormData) => {
         setIsLoading(true)
         try {
             const { status, data } = await axiosInstance.post("/users/signin", authData);
             if (status === 200) {
-                setUser(data?.results?.user)
+                handleSetToken(data?.results?.token);
+                setUser(data?.results?.user);
             }
         } catch (error) {
             const errorObj = error as AxiosError<IErrorResponse>;
@@ -37,19 +39,17 @@ const useLoginForm = () => {
         toast.promise(signin(authData), {
             loading: "Loading..",
             success: () => {
-                router.push("/chats")
                 return "Logged in successfully"
             },
             error: (err) => err
         })
     }
 
-    console.log(user);
-    
-
     useEffect(() => {
         setFocus("emailOrUsername")
     }, [])
+
+    
     return {
         isLoading,
         onSubmit,

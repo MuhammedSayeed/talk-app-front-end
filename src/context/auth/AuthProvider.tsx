@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
         try {
             await axiosInstance.patch("/users/keep-alive");
         } catch (error) {
-            console.error(error)
+            handleError(error)
         }
     }
 
@@ -69,7 +69,6 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
         }
     }, [pathname, user, getUser])
 
-    // keep user alive while using app
     useEffect(() => {
         if (!user) return;
         keepAlive();

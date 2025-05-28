@@ -10,6 +10,7 @@ import { AxiosError } from "axios"
 import { useCallback, useContext, useState } from "react"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
+import useCookies from "./useCookies"
 
 
 interface IProps {
@@ -23,15 +24,14 @@ const useVerifyEmail = ({ onSuccess }: IProps) => {
     const { register, reset, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(verifyEmailSchema)
     })
+    const { setToken } = useCookies();
 
     const isUserVerified = user?.verified;
 
-    const sendVerifyCode = useCallback(async () => {
+    const requestANewCode = useCallback(async () => {
         setIsLoading(true)
         try {
             await axiosInstance.post("/codes")
-            
-
         } catch (error) {
             const errorObj = error as AxiosError<IErrorResponse>;
             throw errorObj.response?.data.message || "something went wrong";
@@ -47,6 +47,7 @@ const useVerifyEmail = ({ onSuccess }: IProps) => {
 
             if (status === 200) {
                 updateUserState("verified", data.results.verified)
+                await setToken(data.results.token);
             }
 
         } catch (error) {
@@ -77,7 +78,7 @@ const useVerifyEmail = ({ onSuccess }: IProps) => {
         })
     }
     const resendCode = async () => {
-        toast.promise(sendVerifyCode(), {
+        toast.promise(requestANewCode(), {
             loading: "Loading..",
             success: () => {
                 reset({

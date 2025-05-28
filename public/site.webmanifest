@@ -1,0 +1,66 @@
+{
+    "name": "Talk App - Real-time Chat Application",
+    "short_name": "Talk App",
+    "description": "Connect and chat with friends in real-time. A modern, secure messaging platform built with Next.js.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "en",
+    "categories": ["social", "communication"],
+    "icons": [
+      {
+        "src": "https://res.cloudinary.com/dndjbkrcv/image/upload/v1748411504/favicon_evz77b.png",
+        "sizes": "16x16",
+        "type": "image/png"
+      },
+      {
+        "src": "https://res.cloudinary.com/dndjbkrcv/image/upload/v1748411504/favicon32_md1jcm.png",
+        "sizes": "32x32",
+        "type": "image/png"
+      },
+      {
+        "src": "https://res.cloudinary.com/dndjbkrcv/image/upload/v1748411504/apple-touch_fk0hvg.png",
+        "sizes": "180x180",
+        "type": "image/png"
+      },
+      {
+        "src": "https://res.cloudinary.com/dndjbkrcv/image/upload/v1748412086/android-chrome-192x192_qsv0sy.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "maskable any"
+      },
+      {
+        "src": "https://res.cloudinary.com/dndjbkrcv/image/upload/v1748412086/android-chrome-512x512_hssika.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable any"
+      }
+    ],
+    "shortcuts": [
+      {
+        "name": "Register",
+        "short_name": "Register and Start talking",
+        "description": "Register and start chatting with friends in real-time.",
+        "url": "/register",
+        "icons": [
+          {
+            "src": "https://res.cloudinary.com/dndjbkrcv/image/upload/v1748411504/favicon32_md1jcm.png",
+            "sizes": "32x32"
+          }
+        ]
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "https://res.cloudinary.com/dndjbkrcv/image/upload/v1748411504/og-image_j8fzwt.png",
+        "sizes": "1200x630",
+        "type": "image/png",
+        "form_factor": "wide",
+        "label": "Talk App Chat Interface"
+      }
+    ]
+  }
+  

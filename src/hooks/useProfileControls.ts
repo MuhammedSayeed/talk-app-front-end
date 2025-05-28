@@ -93,16 +93,14 @@ const useProfileControls = () => {
     const BlockUser = async (_id: string, refetchKey: string) => {
         setIsLoading(true);
         try {
-            const { status, data } = await axiosInstance.post("/blocks", {
+            const { status} = await axiosInstance.post("/blocks", {
                 _id
             })
             if (status === 200) {
                 handleRefetch(refetchKey);
-                console.log(data);
             }
         } catch (error) {
             handleError(error);
-            console.log("blocked in 38");
 
         } finally {
             setIsLoading(false);

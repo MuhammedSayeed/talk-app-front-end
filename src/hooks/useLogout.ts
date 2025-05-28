@@ -1,25 +1,21 @@
 "use client"
-
-import axiosInstance from "@/config/axios"
-import { useSession, signOut } from "next-auth/react"
 import { useCallback, useState } from "react"
 import useUtilts from "./useUtilts"
+import useCookies from "./useCookies"
 
 const useLogout = () => {
-    const { data: session } = useSession()
     const [isLoading, setIsLoading] = useState(false);
     const { handleError } = useUtilts();
+    const { clearToken } = useCookies();
+
+   
 
     const logout = useCallback(async () => {
         setIsLoading(true)
         try {
-            const { status } = await axiosInstance.post("/users/logout")
-            if (status === 200) {
-                if (session) signOut({ redirect: false })
-                setTimeout(() => {
-                    window.location.href = "/login"
-                }, 400)
-            }
+            await clearToken().then(() => {
+                window.location.href = "/login"
+            })
 
         } catch (error) {
             handleError(error)

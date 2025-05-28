@@ -20,8 +20,7 @@ export class ChatApi {
                 return data?.results.chat
             }
             return null
-        } catch (error) {
-            console.error("Error creating/getting chat:", error)
+        } catch{
             return null
         }
     }
@@ -33,8 +32,7 @@ export class ChatApi {
         try {
             const { status } = await axiosInstance.patch("/chats/delete", { _id: chatId })
             return status === 200
-        } catch (error) {
-            console.error("Error deleting chat:", error)
+        } catch{
             return false
         }
     }
@@ -46,8 +44,7 @@ export class ChatApi {
             const { data, status } = await axiosInstance.get(`/chats/${chatId}`)
             if (status === 200) return data?.results.chat
             return null
-        } catch (error) {
-            console.error("Error fetching chat:", error)
+        } catch{
             return null
         }
     }

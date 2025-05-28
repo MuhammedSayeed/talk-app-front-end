@@ -10,49 +10,52 @@ import { AxiosError } from "axios";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import useCookies from "./useCookies";
 
 
 const useUpdateNameForSocialUsers = () => {
-    const {user , updateUserState} = useContext(AuthContext);
-    const [isLoading, setIsLoading] = useState(false)
+  const { user, updateUserState } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false)
+  const { setToken } = useCookies();
 
-    const { register, resetField, handleSubmit, watch, formState: { errors } } = useForm({
-        resolver: yupResolver(updateNameSchemaForSocialUsers)
-      })
-      const currentNameValue = watch('name');
-      const isNameChanged = currentNameValue !== user?.name;
+  const { register, resetField, handleSubmit, watch, formState: { errors } } = useForm({
+    resolver: yupResolver(updateNameSchemaForSocialUsers)
+  })
+  const currentNameValue = watch('name');
+  const isNameChanged = currentNameValue !== user?.name;
 
-      const updateName = useCallback(async (updateNameData: IUpdateNameFormData): Promise<boolean> => {
-        setIsLoading(true)
-        try {
-            const { data, status } = await axiosInstance.patch(`/users/name`, updateNameData);
-            if (status === 200) {
-                updateUserState("name", data.results.name);
-                return true;
-            }
-            return false
-        } catch (error) {
-            const errorObj = error as AxiosError<IErrorResponse>;
-            throw errorObj.response?.data.message || "something went wrong";
-        } finally {
-            setIsLoading(false)
-        }
-    }, [setIsLoading, updateUserState])
-
-      const onSubmit = async (data: { name: string }) => {
-        if (!isNameChanged) return;
-        toast.promise(updateName(data), {
-          loading: "Updating your name..",
-          success: "Name updated successfully",
-          error: (error) => `${error}`
-        })
+  const updateName = useCallback(async (updateNameData: IUpdateNameFormData): Promise<boolean> => {
+    setIsLoading(true)
+    try {
+      const { data, status } = await axiosInstance.patch(`/users/name`, updateNameData);
+      if (status === 200) {
+        setToken(data.results.token);
+        updateUserState("name", data.results.name);
+        return true;
       }
+      return false
+    } catch (error) {
+      const errorObj = error as AxiosError<IErrorResponse>;
+      throw errorObj.response?.data.message || "something went wrong";
+    } finally {
+      setIsLoading(false)
+    }
+  }, [setIsLoading, updateUserState])
 
-      useEffect(() => {
-        if (user?.name) {
-          resetField('name', { defaultValue: user?.name })
-        }
-      }, [user])
+  const onSubmit = async (data: { name: string }) => {
+    if (!isNameChanged) return;
+    toast.promise(updateName(data), {
+      loading: "Updating your name..",
+      success: "Name updated successfully",
+      error: (error) => `${error}`
+    })
+  }
+
+  useEffect(() => {
+    if (user?.name) {
+      resetField('name', { defaultValue: user?.name })
+    }
+  }, [user])
 
   return {
     register,

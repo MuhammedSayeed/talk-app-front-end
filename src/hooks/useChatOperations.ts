@@ -4,6 +4,7 @@ import useDeleteChatModalStore from "@/lib/store/DeleteChatModalStore"
 import { ChatApi } from "@/services/api/ChatApi"
 import { useCallback } from "react"
 import useUpdateMessageStatus from "./useUpdateMessageStatus"
+import useUtilts from "./useUtilts"
 
 
 interface UseChatOperationsProps {
@@ -22,7 +23,7 @@ export const useChatOperations = ({ isChatSelected, setActiveChat, setFriendInfo
   const { toggleChatBox } = useChatBoxStore();
   const { isOpen, toggleDeleteChatModal } = useDeleteChatModalStore()
   const { markMessageAsRead, updateMessageStatusInChat } = useUpdateMessageStatus({ setChats });
-
+  const {handleError} = useUtilts();
   const createOrGetChat = useCallback(async (_id: string) => {
     toggleChatBox()
     if (isChatSelected(_id)) return
@@ -35,7 +36,7 @@ export const useChatOperations = ({ isChatSelected, setActiveChat, setFriendInfo
         updateMessageStatusInChat(chat._id);
       }
     } catch (error) {
-      console.error("Error creating/getting chat:", error)
+      handleError(error)
     } finally {
       setIsChatLoading(false)
     }
@@ -54,7 +55,7 @@ export const useChatOperations = ({ isChatSelected, setActiveChat, setFriendInfo
           setChats((prev) => prev?.filter((chat) => chat._id !== _id) || null)
         }
       } catch (error) {
-        console.error("Error deleting chat:", error)
+        handleError(error)
       } finally {
         setIsLoading(false)
       }
