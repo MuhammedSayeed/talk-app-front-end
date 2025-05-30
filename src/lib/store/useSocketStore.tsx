@@ -25,6 +25,8 @@ export const useSocketStore = create<UserProfileState>((set, get) => ({
 
     connect: () => {
         const { isConnected, socket } = get();
+        console.log("is connected" , isConnected);
+        
         if (!isConnected) {
             socket.connect();
             set({ isConnected: true });

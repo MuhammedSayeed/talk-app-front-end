@@ -12,6 +12,7 @@ export const useMessageSocket = (userId: string | undefined, activeChatId: strin
     const { on, off } = useSocketStore();
 
     const handleNewMessage = useCallback((message: IMessage) => {
+        console.log("15" , message);
         onNewMessage(message)
     }, [onNewMessage]);
 
