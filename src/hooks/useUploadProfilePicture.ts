@@ -6,30 +6,32 @@ import { IErrorResponse } from "@/interfaces/errors";
 import { AxiosError } from "axios";
 import { useCallback, useContext, useRef, useState } from "react"
 import toast from "react-hot-toast";
+import useToken from "./useToken";
 
 const useUploadProfilePicture = () => {
     const [isLoading, setIsLoading] = useState(false);
     const { user, updateUserState } = useContext(AuthContext);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-
+    const { token } = useToken();
     const handleButtonClick = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
     };
 
+    
+
     const uploadProfilePicture = useCallback(async (formData: FormData) => {
-        if (!user?._id) return
+        if (!user?._id || token) return
 
         setIsLoading(true)
         try {
-            const { data, status } = await axiosInstance.patch(`/users/upload-profile-pic?folder=profile-pics/${user._id}`,
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
+            const { data, status } = await axiosInstance.patch(`/users/upload-profile-pic?folder=profile-pics/${user._id}`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`
                 },
+            },
             )
             if (status === 200) {
                 updateUserState("profilePic", data.results.profilePic);
@@ -41,7 +43,7 @@ const useUploadProfilePicture = () => {
             setIsLoading(false);
         }
     },
-        [setIsLoading, updateUserState, user?._id],
+        [setIsLoading, updateUserState, user?._id , token],
     )
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];

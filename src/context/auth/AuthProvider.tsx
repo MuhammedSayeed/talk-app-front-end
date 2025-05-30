@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation"
 import useUtilts from "@/hooks/useUtilts"
 import { AUTH_CONFIG } from "@/constants/routes"
 import { IUser } from "@/interfaces/auth"
+import useToken from "@/hooks/useToken"
 
 interface IAuthProviderProps {
     children: React.ReactNode
@@ -17,6 +18,8 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
     const pathname = usePathname()
     const router = useRouter();
     const { handleError } = useUtilts();
+    const { token } = useToken();
+
 
     // State management
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -32,11 +35,15 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
             }
         })
     }
-
     const getUser = useCallback(async () => {
+        if (!token) return;
         setIsLoading(true)
         try {
-            const { data, status } = await axiosInstance.get("/users/me");
+            const { data, status } = await axiosInstance.get("/users/me", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
 
             if (status === 200) {
                 setUser(data.results.user)
@@ -47,17 +54,20 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
         } finally {
             setIsLoading(false)
         }
-    }, [router, setUser])
+    }, [router, setUser, token])
 
     const keepAlive = async () => {
+        if (!token) return;
         try {
-            await axiosInstance.patch("/users/keep-alive");
+            await axiosInstance.patch("/users/keep-alive", {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
         } catch (error) {
             handleError(error)
         }
     }
-
-
     // Check if the current path is private and requires authentication
     const isPrivatePath = (path: string) => {
         return AUTH_CONFIG.privatePathPrefixes.some((prefix) => path.startsWith(prefix))
@@ -68,16 +78,17 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
             getUser()
         }
     }, [pathname, user, getUser])
-
+    // Keep user alive
     useEffect(() => {
         if (!user) return;
         keepAlive();
-    
+
         const interval = setInterval(() => {
-          keepAlive()
+            keepAlive()
         }, 45000);
         return () => clearInterval(interval);
-      }, [user?._id])
+    }, [user?._id])
+
 
 
     return (

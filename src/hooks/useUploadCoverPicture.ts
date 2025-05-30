@@ -6,21 +6,23 @@ import { IErrorResponse } from "@/interfaces/errors";
 import { AxiosError } from "axios";
 import { useCallback, useContext, useRef, useState } from "react"
 import toast from "react-hot-toast";
+import useToken from "./useToken";
 
 const useUploadCoverPicture = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { user, updateUserState } = useContext(AuthContext);
-
+  const {token} = useToken();
   const uploadCoverPicture = useCallback(
     async (formData: FormData) => {
-      if (!user?._id) return
+      if (!user?._id || token) return
       setIsLoading(true)
       try {
         const { data, status } = await axiosInstance.patch(`/users/upload-cover-pic?folder=cover-pics/${user._id}`, formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`
             },
           },
         )
@@ -34,7 +36,7 @@ const useUploadCoverPicture = () => {
         setIsLoading(false)
       }
     },
-    [setIsLoading, updateUserState, user?._id],
+    [setIsLoading, updateUserState, user?._id ,token],
   )
   const handleButtonClick = () => {
     if (fileInputRef.current) {

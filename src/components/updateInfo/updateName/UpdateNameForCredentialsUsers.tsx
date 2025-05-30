@@ -8,8 +8,6 @@ import { AccordionItem } from '@radix-ui/react-accordion';
 
 const UpdateNameForCredentialsUsers = () => {
     const {register , errors , handleSubmit , isLoading , onSubmit , isNameChanged} = useUpdateNameForCredentialsUsers();
-    
-
     const RENDER_INPUTS = UPDATE_NAME_INPUTS_FORM.map((i) => (
         <div key={i.id} >
             <label htmlFor={i.id} className="text-[14px]">{i.label}</label>

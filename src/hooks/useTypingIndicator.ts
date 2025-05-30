@@ -5,13 +5,14 @@ import { AuthContext } from "@/context/auth/AuthContext";
 import { ChatContext } from "@/context/chat/ChatContext";
 import { useContext, useEffect, useRef } from "react";
 import useUtilts from "./useUtilts";
+import useToken from "./useToken";
 
 
 const useTypingIndicator = () => {
     const { user } = useContext(AuthContext)
     const { activeChat } = useContext(ChatContext)
     const { handleError } = useUtilts();
-
+    const { token } = useToken();
 
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const isTypingRef = useRef(false);
@@ -25,8 +26,12 @@ const useTypingIndicator = () => {
                 chatId: activeChat?._id,
                 isTyping,
                 userId: user?._id
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             })
-            
+
         } catch (error) {
             handleError(error)
         }
@@ -80,7 +85,7 @@ const useTypingIndicator = () => {
                 sendTypingStatus(false);
             }
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeChat]);
 
     return {

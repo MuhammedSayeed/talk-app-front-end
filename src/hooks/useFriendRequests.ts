@@ -5,24 +5,31 @@ import { useContext, useEffect, useState } from "react";
 import axiosInstance from "@/config/axios";
 import useUtilts from "./useUtilts";
 import { useSocketStore } from "@/lib/store/useSocketStore";
+import useToken from "./useToken";
 
 const useFriendRequests = () => {
     const [count, setCount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
-    const { isOpen , toggleModal } = useFriendRequestModalStore();
+    const { isOpen, toggleModal } = useFriendRequestModalStore();
     const { user } = useContext(AuthContext);
-    const {on , off} = useSocketStore();
+    const { on, off } = useSocketStore();
     const { handleError } = useUtilts();
+    const { token } = useToken();
     const { data, refetch } = useCustomQuery({
         queryKey: ["unread-friend-requests", `${isOpen}`],
         endPoint: `/notifications/unread/friend-request`,
-        config: { withCredentials: true },
-        enabled: !!user,
+        config: { headers: { Authorization: `Bearer ${token}` } },
+        enabled: (!!user && !!token),
     });
     const readNotifications = async () => {
+        if (!token) return;
         setIsLoading(true);
         try {
-            const { status } = await axiosInstance.patch("/notifications/friend-request");
+            const { status } = await axiosInstance.patch("/notifications/friend-request", {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
             if (status === 200) {
                 setCount(0);
             }
@@ -53,7 +60,7 @@ const useFriendRequests = () => {
     // listen for friend request notification
     useEffect(() => {
         if (!user?._id) return;
-        on("friend-request-notification" , increaseCount)
+        on("friend-request-notification", increaseCount)
         return () => {
             off("friend-request-notification", increaseCount)
         };
@@ -66,10 +73,10 @@ const useFriendRequests = () => {
         }
     }, [isOpen]);
 
-  return {
-    count,
-    handleOpenModal
-  }
+    return {
+        count,
+        handleOpenModal
+    }
 }
 
 export default useFriendRequests

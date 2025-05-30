@@ -11,6 +11,8 @@ import { useCallback, useContext, useState } from "react"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import useCookies from "./useCookies"
+import useLocalStorage from "./useLocalStorage"
+import useToken from "./useToken"
 
 
 interface IProps {
@@ -20,18 +22,25 @@ interface IProps {
 
 const useVerifyEmail = ({ onSuccess }: IProps) => {
     const [isLoading, setIsLoading] = useState(false);
-    const { updateUserState , user} = useContext(AuthContext);
+    const { updateUserState, user } = useContext(AuthContext);
     const { register, reset, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(verifyEmailSchema)
     })
     const { setToken } = useCookies();
+    const { setOnLocalStorage } = useLocalStorage();
+    const { token } = useToken();
 
     const isUserVerified = user?.verified;
 
     const requestANewCode = useCallback(async () => {
+        if (!token) return;
         setIsLoading(true)
         try {
-            await axiosInstance.post("/codes")
+            await axiosInstance.post("/codes", {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
         } catch (error) {
             const errorObj = error as AxiosError<IErrorResponse>;
             throw errorObj.response?.data.message || "something went wrong";
@@ -39,14 +48,20 @@ const useVerifyEmail = ({ onSuccess }: IProps) => {
         } finally {
             setIsLoading(false)
         }
-    }, [setIsLoading])
+    }, [setIsLoading ,token])
     const verifyEmail = useCallback(async (verifyCodeData: IVerifyEmailFormData) => {
+        if (!token) return;
         setIsLoading(true)
         try {
-            const { status, data } = await axiosInstance.post("/users/verify-email", verifyCodeData)
+            const { status, data } = await axiosInstance.post("/users/verify-email", verifyCodeData, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
 
             if (status === 200) {
                 updateUserState("verified", data.results.verified)
+                setOnLocalStorage("token", data.results.token)
                 await setToken(data.results.token);
             }
 
@@ -58,7 +73,7 @@ const useVerifyEmail = ({ onSuccess }: IProps) => {
             setIsLoading(false)
         }
     },
-        [setIsLoading, updateUserState],
+        [setIsLoading, updateUserState , token],
     )
     const onSubmit = async (data: IVerifyEmailFormData) => {
         toast.promise(verifyEmail(data), {
@@ -91,7 +106,7 @@ const useVerifyEmail = ({ onSuccess }: IProps) => {
         })
     }
     return {
-        register ,
+        register,
         errors,
         handleSubmit,
         onSubmit,

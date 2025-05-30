@@ -8,13 +8,15 @@ import { FormEvent, useCallback, useContext, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import useTypingIndicator from "./useTypingIndicator";
 import useUtilts from "./useUtilts";
+import useToken from "./useToken";
 
 const useMessageInput = () => {
     const { activeChat } = useContext(ChatContext);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const { isTypingRef, sendTypingEvent } = useTypingIndicator();
     const [message, setMessage] = useState("");
-    const {handleError} = useUtilts()
+    const { handleError } = useUtilts()
+    const { token } = useToken();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newMessage = e.target.value;
@@ -34,7 +36,9 @@ const useMessageInput = () => {
                 content: message.content
             },
             urlQuery: "",
-            headers: undefined
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         }
     }
     const prepareImageMessageRequest = (message: ImageMessage) => {
@@ -46,7 +50,8 @@ const useMessageInput = () => {
             body: formData,
             urlQuery: `?folder=chat-media/${message.chat}`,
             headers: {
-                "Content-Type": "multipart/form-data"
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`
             }
         };
     }
@@ -56,7 +61,9 @@ const useMessageInput = () => {
     const sendMessageApiCall = async (message: Message) => {
         const { body, headers, urlQuery } = prepareMessageRequest(message);
         try {
-            const { status } = await axiosInstance.post(`/messages${urlQuery}`, body, headers ? { headers } : undefined);
+            const { status } = await axiosInstance.post(`/messages${urlQuery}`, body, {
+                headers
+            });
             if (status === 201) {
                 sendTypingEvent(false);
             }

@@ -5,6 +5,7 @@ import { ChatApi } from "@/services/api/ChatApi"
 import { useCallback } from "react"
 import useUpdateMessageStatus from "./useUpdateMessageStatus"
 import useUtilts from "./useUtilts"
+import useToken from "./useToken"
 
 
 interface UseChatOperationsProps {
@@ -23,13 +24,16 @@ export const useChatOperations = ({ isChatSelected, setActiveChat, setFriendInfo
   const { toggleChatBox } = useChatBoxStore();
   const { isOpen, toggleDeleteChatModal } = useDeleteChatModalStore()
   const { markMessageAsRead, updateMessageStatusInChat } = useUpdateMessageStatus({ setChats });
-  const {handleError} = useUtilts();
+  const { handleError } = useUtilts();
+  const { token } = useToken();
+
   const createOrGetChat = useCallback(async (_id: string) => {
+    if (!token) return;
     toggleChatBox()
     if (isChatSelected(_id)) return
     setIsChatLoading(true)
     try {
-      const chat = await ChatApi.createOrGetChat(_id)
+      const chat = await ChatApi.createOrGetChat(_id, token)
       if (chat) {
         setActiveChat(chat)
         markMessageAsRead(chat._id)
@@ -41,13 +45,14 @@ export const useChatOperations = ({ isChatSelected, setActiveChat, setFriendInfo
       setIsChatLoading(false)
     }
 
-  }, [isChatSelected, setActiveChat, setIsChatLoading, toggleChatBox])
+  }, [isChatSelected, setActiveChat, setIsChatLoading, toggleChatBox, token])
 
   const deleteChat = useCallback(
     async (_id: string) => {
+      if (!token) return;
       setIsLoading(true)
       try {
-        const success = await ChatApi.deleteChat(_id)
+        const success = await ChatApi.deleteChat(_id, token)
         if (success) {
           setActiveChat(null)
           setFriendInfo(null)
@@ -60,7 +65,7 @@ export const useChatOperations = ({ isChatSelected, setActiveChat, setFriendInfo
         setIsLoading(false)
       }
     },
-    [isOpen, setActiveChat, setChats, setFriendInfo, setIsLoading, toggleDeleteChatModal],
+    [isOpen, setActiveChat, setChats, setFriendInfo, setIsLoading, toggleDeleteChatModal, token],
   )
 
   return { createOrGetChat, deleteChat }

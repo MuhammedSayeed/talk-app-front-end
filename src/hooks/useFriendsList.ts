@@ -7,6 +7,7 @@ import { AuthContext } from "@/context/auth/AuthContext"
 import { IFriendShip } from "@/interfaces/card"
 import axiosInstance from "@/config/axios"
 import useInfiniteScroll from "./useInfiniteScroll"
+import useToken from "./useToken"
 
 const useFriendsList = () => {
     const [searchTerm, setSearchTerm] = useState("")
@@ -14,12 +15,16 @@ const useFriendsList = () => {
     const queryClient = useQueryClient()
     const { user } = useContext(AuthContext);
     const [friendships, setFriendShips] = useState<IFriendShip[]>([]);
-
+    const { token } = useToken();
     const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQuery({
         initialPageParam: 1,
         queryKey: ["friends", `${user?._id}`, debouncedSearchTerm],
         queryFn: async ({ pageParam }) => {
-            const response = await axiosInstance.get(`/friendships?page=${pageParam}${debouncedSearchTerm ? `&search=${debouncedSearchTerm}` : ""}`);
+            const response = await axiosInstance.get(`/friendships?page=${pageParam}${debouncedSearchTerm ? `&search=${debouncedSearchTerm}` : ""}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             const { metadata, results } = response.data;
             return { metadata, results };
         },
@@ -28,14 +33,14 @@ const useFriendsList = () => {
                 ? lastPage.metadata.page + 1
                 : undefined;
         },
-        enabled: !!user?._id,
+        enabled: (!!user?._id && !!token),
         staleTime: 0,
         gcTime: 0,
         refetchOnMount: true,
         refetchOnWindowFocus: false,
     })
     const { lastItemRef } = useInfiniteScroll({ fetchNextPage, hasNextPage, isLoading, isFetchingNextPage });
-    
+
     useEffect(() => {
         if (data) {
             const allFriends = data.pages.flatMap(page => page.results.friends || []);
@@ -58,14 +63,14 @@ const useFriendsList = () => {
         setSearchTerm(e.target.value);
     };
 
-  return {
-    handleSearchChange,
-    lastItemRef,
-    friendships,
-    searchTerm,
-    hasNextPage,
-    isLoading
-  }
+    return {
+        handleSearchChange,
+        lastItemRef,
+        friendships,
+        searchTerm,
+        hasNextPage,
+        isLoading
+    }
 }
 
 export default useFriendsList

@@ -9,14 +9,17 @@ import { AxiosError } from "axios";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import useToken from "./useToken";
 
 export const useUpdateUserBio = () => {
-    const { user , updateUserState} = useContext(AuthContext);
-    const [isLoading , setIsLoading] = useState(false);
+    const { user, updateUserState } = useContext(AuthContext);
+    const [isLoading, setIsLoading] = useState(false);
     const { register, reset, handleSubmit, watch, setFocus, formState: { errors } } = useForm({
         resolver: yupResolver(bioSchema),
     })
     const currentBio = watch("bio");
+    const { token } = useToken();
+
     const isBioChanged = useMemo(() => {
         if (user?.bio) return user?.bio === currentBio;
 
@@ -26,7 +29,11 @@ export const useUpdateUserBio = () => {
     const addBio = useCallback(async (bio: string) => {
         setIsLoading(true)
         try {
-            const { data, status } = await axiosInstance.patch(`/users/bio`, { bio });
+            const { data, status } = await axiosInstance.patch(`/users/bio`, { bio }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             if (status === 200) {
                 updateUserState("bio", data.results.bio)
             }
@@ -36,7 +43,7 @@ export const useUpdateUserBio = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [setIsLoading, updateUserState])
+    }, [setIsLoading, updateUserState , token])
 
     const onSubmit = async (data: { bio: string }) => {
         toast.promise(addBio(data?.bio), {

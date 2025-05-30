@@ -2,9 +2,11 @@
 import useUserProfileStore from "@/lib/store/UserProfileStore";
 import { useEffect } from "react";
 import useCustomQuery from "./useCustomQuery";
+import useToken from "./useToken";
 
 const useUserProfileModal = () => {
     const { id, isOpen, toggleUserProfile, setProfile } = useUserProfileStore();
+    const { token } = useToken();
     const onClose = () => {
         toggleUserProfile();
     }
@@ -12,8 +14,12 @@ const useUserProfileModal = () => {
     const { data, isLoading, refetch } = useCustomQuery({
         queryKey: ['user-profile', `${id}`],
         endPoint: `/users/profile/${id}`,
-        config: { withCredentials: true },
-        enabled: Boolean(id)
+        config: {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        },
+        enabled: (!!id && !!token)
     })
 
 
@@ -21,14 +27,12 @@ const useUserProfileModal = () => {
         if (isOpen && id) {
             refetch();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, id]);
 
     useEffect(() => {
-        if (data ) {
+        if (data) {
             setProfile(data?.results)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data])
 
     return {

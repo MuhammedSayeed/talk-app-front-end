@@ -5,6 +5,7 @@ import useNotificationsModalStore from "@/lib/store/NotificationsModalStore";
 import useCustomQuery from "./useCustomQuery";
 import axiosInstance from "@/config/axios";
 import { useSocketStore } from "@/lib/store/useSocketStore";
+import useToken from "./useToken";
 
 const useNotifications = () => {
     const { user } = useContext(AuthContext);
@@ -12,17 +13,22 @@ const useNotifications = () => {
     const { isOpen, toggleModal } = useNotificationsModalStore();
     const [count, setCount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
-    const {on , off} = useSocketStore();
-    const { data , refetch} = useCustomQuery({
+    const { on, off } = useSocketStore();
+    const { token } = useToken();
+    const { data, refetch } = useCustomQuery({
         queryKey: ["unread-notifications"],
         endPoint: "/notifications/unread/accept-friend-request",
-        config: { withCredentials: true },
-        enabled: !!user, // Only fetch if user exists
+        config: { headers: { Authorization: `Bearer ${token}` } },
+        enabled: (!!user && !!token),
     });
     const readNotifications = async () => {
         setIsLoading(true);
         try {
-            const { status } = await axiosInstance.patch("/notifications/accept-friend-request");
+            const { status } = await axiosInstance.patch("/notifications/accept-friend-request" , {} , {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             if (status === 200) {
                 setCount(0);
             }
@@ -55,7 +61,7 @@ const useNotifications = () => {
         on("accept-friend-request-notification", increaseCount)
 
         return () => {
-         off("accept-friend-request-notification", increaseCount)
+            off("accept-friend-request-notification", increaseCount)
         };
     }, [user?._id]);
     useEffect(() => {
@@ -64,10 +70,10 @@ const useNotifications = () => {
         }
     }, [isOpen]);
 
-  return {
-    handleOpenModal,
-    count
-  }
+    return {
+        handleOpenModal,
+        count
+    }
 }
 
 export default useNotifications

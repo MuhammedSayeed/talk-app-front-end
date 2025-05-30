@@ -7,18 +7,22 @@ import { IErrorResponse } from '@/interfaces/errors';
 import { IUpdateUsernameFormData } from '@/interfaces/forms';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AxiosError } from 'axios';
-import  { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useCookies from './useCookies';
+import useLocalStorage from './useLocalStorage';
+import useToken from './useToken';
 
 const useUpdateUsernameForCredentialsUsers = () => {
-    const {user , updateUserState} = useContext(AuthContext);
-    const [isLoading , setIsLoading] = useState(false); 
+    const { user, updateUserState } = useContext(AuthContext);
+    const [isLoading, setIsLoading] = useState(false);
     const { register, resetField, handleSubmit, watch, formState: { errors } } = useForm({
         resolver: yupResolver(updateUsernameSchema)
     })
-    const {setToken} = useCookies();
+    const { setToken } = useCookies();
+    const { setOnLocalStorage } = useLocalStorage();
+    const { token } = useToken();
     const currentUserNameValue = watch('username');
     const isUserNameChanged = currentUserNameValue !== user?.username;
 
@@ -26,10 +30,15 @@ const useUpdateUsernameForCredentialsUsers = () => {
         async (updateUsernameData: IUpdateUsernameFormData) => {
             setIsLoading(true)
             try {
-                const { data, status } = await axiosInstance.patch(`/users/username`, updateUsernameData)
+                const { data, status } = await axiosInstance.patch(`/users/username`, updateUsernameData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
                 if (status === 200) {
                     updateUserState("username", data.results.username)
                     setToken(data.results.token)
+                    setOnLocalStorage("token", data.results.token)
                 }
             } catch (error) {
                 const errorObj = error as AxiosError<IErrorResponse>;
@@ -38,13 +47,13 @@ const useUpdateUsernameForCredentialsUsers = () => {
                 setIsLoading(false)
             }
         },
-        [setIsLoading, updateUserState],
+        [setIsLoading, updateUserState , token],
     )
 
 
     const onSubmit = async (data: IUpdateUsernameFormData) => {
         if (!isUserNameChanged) return;
-        toast.promise(updateUserName(data) , {
+        toast.promise(updateUserName(data), {
             loading: "Updating your username..",
             success: "Username updated successfully",
             error: (error) => `${error}`
@@ -58,14 +67,14 @@ const useUpdateUsernameForCredentialsUsers = () => {
         }
     }, [user])
 
-  return {
-    onSubmit,
-    handleSubmit,
-    register,
-    errors,
-    isLoading,
-    isUserNameChanged
-  }
+    return {
+        onSubmit,
+        handleSubmit,
+        register,
+        errors,
+        isLoading,
+        isUserNameChanged
+    }
 }
 
 export default useUpdateUsernameForCredentialsUsers

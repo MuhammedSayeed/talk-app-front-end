@@ -5,6 +5,7 @@ import { useContext } from "react";
 import useUtilts from "./useUtilts";
 import { IChat } from "@/interfaces/chat";
 import axiosInstance from "@/config/axios";
+import useToken from "./useToken";
 
 
 interface IProps {
@@ -14,7 +15,7 @@ interface IProps {
 const useUpdateMessageStatus = ({ setChats }: IProps) => {
     const { user } = useContext(AuthContext);
     const { handleError } = useUtilts();
-
+    const {token} = useToken();
     const updateMessageStatusInChat = (chatId: string) => {
         setChats((prev) => {
             if (!prev) return prev;
@@ -34,8 +35,13 @@ const useUpdateMessageStatus = ({ setChats }: IProps) => {
         )
     }
     const markMessageAsRead = async (chatId: string) => {
+        if (!token) return;
         try {
-            const { status } = await axiosInstance.patch(`/messages/mark-seen/${chatId}`);
+            const { status } = await axiosInstance.patch(`/messages/mark-seen/${chatId}` , {} , {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
             if (status === 200) {
                 // updateMessageStatusInChat(chatId);
             }

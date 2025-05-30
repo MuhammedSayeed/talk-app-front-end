@@ -11,19 +11,21 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import useAuth from "./useAuth";
+import useLocalStorage from "./useLocalStorage";
 
 const useLoginForm = () => {
     const { setUser } = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(false);
     const { register, handleSubmit, formState: { errors }, setFocus } = useForm({ resolver: yupResolver(loginSchema) });
     const {handleSetToken} = useAuth();
-
+    const {setOnLocalStorage} = useLocalStorage();
 
     const signin = useCallback(async (authData: ILoginFormData) => {
         setIsLoading(true)
         try {
             const { status, data } = await axiosInstance.post("/users/signin", authData);
             if (status === 200) {
+                setOnLocalStorage("token", data?.results?.token)
                 handleSetToken(data?.results?.token);
                 setUser(data?.results?.user);
             }

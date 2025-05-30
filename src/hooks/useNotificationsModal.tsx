@@ -4,14 +4,16 @@ import { INotificationCard } from "@/interfaces/notifications"
 import NotificationCard from "@/components/notifications/NotificationCard"
 import useNotificationsModalStore from "@/lib/store/NotificationsModalStore"
 import { useEffect } from "react"
+import useToken from "./useToken"
 
 const useNotificationsModal = () => {
     const { isOpen, toggleModal } = useNotificationsModalStore();
+    const { token } = useToken();
     const { data, isLoading, refetch } = useCustomQuery({
         queryKey: ["notifications"],
         endPoint: "notifications/accept-friend-request",
-        config: { withCredentials: true },
-        enabled: true
+        config: { headers: { Authorization: `Bearer ${token}` } },
+        enabled: (!!token)
     })
     useEffect(() => {
         if (isOpen) {
@@ -21,7 +23,7 @@ const useNotificationsModal = () => {
 
     const handleClose = () => toggleModal();
 
-    
+
 
     const RENDER_NOTIFICATIONS = () => {
         if (data?.results?.length === 0) return <Message message="No new Notifications" />

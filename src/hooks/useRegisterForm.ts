@@ -12,6 +12,7 @@ import { useCallback, useContext, useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import useAuth from "./useAuth";
+import useLocalStorage from "./useLocalStorage";
 
 const useRegisterForm = () => {
   const router = useRouter();
@@ -20,6 +21,7 @@ const useRegisterForm = () => {
   const [isLoading, setIsloading] = useState(false);
   const { setOnBoarding } = useOnBoardingStore()
   const { handleSetToken } = useAuth();
+  const { setOnLocalStorage } = useLocalStorage();
 
 
   const signup = useCallback(async (authData: IRegisterFormData) => {
@@ -27,6 +29,7 @@ const useRegisterForm = () => {
     try {
       const { status, data } = await axiosInstance.post("/users/signup", authData);
       if (status === 201) {
+        setOnLocalStorage("token", data.results.token)
         handleSetToken(data?.results?.token);
         setOnBoarding(true);
         setUser(data?.results?.user);

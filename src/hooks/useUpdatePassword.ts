@@ -11,6 +11,8 @@ import { useCallback, useContext, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useCookies from './useCookies';
+import useLocalStorage from './useLocalStorage';
+import useToken from './useToken';
 
 const useUpdatePassword = () => {
     const { user, updateUserState } = useContext(AuthContext);
@@ -18,8 +20,9 @@ const useUpdatePassword = () => {
     const { register, reset, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(updatePasswordSchema)
     })
-    const {setToken} = useCookies();
-
+    const { setToken } = useCookies();
+    const { setOnLocalStorage } = useLocalStorage();
+    const { token } = useToken();
 
     const passwordChangeInfo = useMemo(() => {
         if (!user?.passwordChangedAt) return { canChangePassword: true, date: null };
@@ -48,8 +51,13 @@ const useUpdatePassword = () => {
         async (updatePasswordData: IUpdatePasswordFormData) => {
             setIsLoading(true)
             try {
-                const { status, data } = await axiosInstance.patch(`/users/password`, updatePasswordData);
+                const { status, data } = await axiosInstance.patch(`/users/password`, updatePasswordData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 if (status === 200) {
+                    setOnLocalStorage("token", data.results.token)
                     setToken(data.results.token);
                     updateUserState("passwordChangedAt", data.results.passwordChangedAt);
                 }
@@ -60,7 +68,7 @@ const useUpdatePassword = () => {
                 setIsLoading(false)
             }
         },
-        [setIsLoading],
+        [setIsLoading , token],
     )
 
     const onSubmit = async (data: IUpdatePasswordFormData) => {

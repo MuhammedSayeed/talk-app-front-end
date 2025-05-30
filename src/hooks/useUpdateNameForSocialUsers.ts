@@ -11,24 +11,33 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import useCookies from "./useCookies";
+import useLocalStorage from "./useLocalStorage";
+import useToken from "./useToken";
 
 
 const useUpdateNameForSocialUsers = () => {
   const { user, updateUserState } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false)
   const { setToken } = useCookies();
-
+  const { setOnLocalStorage } = useLocalStorage();
   const { register, resetField, handleSubmit, watch, formState: { errors } } = useForm({
     resolver: yupResolver(updateNameSchemaForSocialUsers)
   })
+  const { token } = useToken();
+
   const currentNameValue = watch('name');
   const isNameChanged = currentNameValue !== user?.name;
 
   const updateName = useCallback(async (updateNameData: IUpdateNameFormData): Promise<boolean> => {
     setIsLoading(true)
     try {
-      const { data, status } = await axiosInstance.patch(`/users/name`, updateNameData);
+      const { data, status } = await axiosInstance.patch(`/users/name`, updateNameData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       if (status === 200) {
+        setOnLocalStorage("token", data.results.token)
         setToken(data.results.token);
         updateUserState("name", data.results.name);
         return true;
@@ -40,7 +49,7 @@ const useUpdateNameForSocialUsers = () => {
     } finally {
       setIsLoading(false)
     }
-  }, [setIsLoading, updateUserState])
+  }, [setIsLoading, updateUserState , token])
 
   const onSubmit = async (data: { name: string }) => {
     if (!isNameChanged) return;

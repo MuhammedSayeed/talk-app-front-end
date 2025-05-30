@@ -8,9 +8,10 @@ import UserCardSkeleton from "@/components/skeleton/UserCard";
 import useInfiniteScroll from "./useInfiniteScroll";
 import Message from "@/components/ui/messages/Message";
 import useUtilts from "./useUtilts";
+import useToken from "./useToken";
 
 const useSearchModal = () => {
-    const {handleError} = useUtilts();
+    const { handleError } = useUtilts();
     const { isOpen, toggleModal } = useSearchModalStore();
     const [isLoading, setIsLoading] = useState(false);
     const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
@@ -20,6 +21,7 @@ const useSearchModal = () => {
     const [hasNextPage, setHasNextPage] = useState(false);
     const debouncedQuery = useDebounce({ value: searchQuery, delay: 500 });
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const { token } = useToken();
 
     const fetchResults = async (pageParam = 1) => {
         if (pageParam === 1) {
@@ -28,7 +30,11 @@ const useSearchModal = () => {
             setIsFetchingNextPage(true)
         }
         try {
-            const { data, status } = await axiosInstance.get(`/users?search=${debouncedQuery}&page=${pageParam}`);
+            const { data, status } = await axiosInstance.get(`/users?search=${debouncedQuery}&page=${pageParam}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             if (status === 200) {
                 setResults(prev => pageParam === 1 ? data.results : [...prev, ...data.results]);
                 setHasNextPage(data.metadata.hasNextPage);

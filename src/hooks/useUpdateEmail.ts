@@ -11,6 +11,8 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import useCookies from "./useCookies";
+import useLocalStorage from "./useLocalStorage";
+import useToken from "./useToken";
 
 
 interface IProps {
@@ -24,8 +26,8 @@ const useUpdateEmail = ({ onSuccess }: IProps) => {
         resolver: yupResolver(updateEmailSchema)
     })
     const { setToken } = useCookies();
-
-
+    const { setOnLocalStorage } = useLocalStorage();
+    const { token } = useToken();
 
     const emailChangeInfo = useMemo(() => {
         if (!user?.emailChangedAt) return { canChangeEmail: true, date: null };
@@ -57,8 +59,13 @@ const useUpdateEmail = ({ onSuccess }: IProps) => {
             setIsLoading(true)
             try {
 
-                const { data, status } = await axiosInstance.patch(`/users/email`, updateEmailData);
+                const { data, status } = await axiosInstance.patch(`/users/email`, updateEmailData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 if (status === 200) {
+                    setOnLocalStorage("token", data.results.token)
                     setToken(data.results.token);
                     updateUserState("email", data.results.email)
                     updateUserState("verified", data.results.verified)
@@ -71,7 +78,7 @@ const useUpdateEmail = ({ onSuccess }: IProps) => {
                 setIsLoading(false)
             }
         },
-        [setIsLoading, updateUserState],
+        [setIsLoading, updateUserState , token],
     )
     const onSubmit = async (data: IUpdateEmailFormData) => {
         toast.promise(updateEmail(data), {

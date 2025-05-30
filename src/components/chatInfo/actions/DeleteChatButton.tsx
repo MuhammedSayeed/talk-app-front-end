@@ -18,13 +18,13 @@ const DeleteChatButton = () => {
 
     }
 
-  return (
-    <TooltipProvider>
+    return (
+        <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
-                <Button onClick={handleOpenDeleteChatModal} variant={"outline"} size={"icon"} className="p-6 cursor-pointer">
-                    <Trash className="size-5.5" />
-                </Button>
+                    <Button onClick={handleOpenDeleteChatModal} variant={"outline"} size={"icon"} className="p-6 cursor-pointer">
+                        <Trash className="size-5.5" />
+                    </Button>
                 </TooltipTrigger>
                 <TooltipContent className="z-[99999] font-medium">
                     <p>Delete chat</p>

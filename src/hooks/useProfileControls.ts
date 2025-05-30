@@ -1,9 +1,10 @@
 import axiosInstance from "@/config/axios";
 import { useState } from "react";
 import useUtilts from "./useUtilts";
+import useToken from "./useToken";
 
 const useProfileControls = () => {
-
+    const { token } = useToken();
     const [isLoading, setIsLoading] = useState(false);
     const { handleRefetch, handleError } = useUtilts();
 
@@ -12,6 +13,11 @@ const useProfileControls = () => {
         try {
             const { status } = await axiosInstance.post("/friend-requests", {
                 _id
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+
             })
             if (status === 201) {
                 handleRefetch(refetchKey);
@@ -28,6 +34,9 @@ const useProfileControls = () => {
             const { status } = await axiosInstance.delete("/friend-requests/cancel", {
                 data: {
                     _id
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
             })
             if (status === 200) {
@@ -39,12 +48,15 @@ const useProfileControls = () => {
             setIsLoading(false);
         }
     }
-
     const acceptFriendRequest = async (_id: string, refetchKey: string) => {
         setIsLoading(true);
         try {
             const { status } = await axiosInstance.post("/friend-requests/accept", {
                 _id
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             })
             if (status === 200) {
                 handleRefetch(refetchKey);
@@ -61,6 +73,9 @@ const useProfileControls = () => {
             const { status } = await axiosInstance.delete("/friend-requests/decline", {
                 data: {
                     _id
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
             })
             if (status === 200) {
@@ -79,6 +94,9 @@ const useProfileControls = () => {
                 data: {
                     friendshipId,
                     friendId
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
             })
             if (status === 200) {
@@ -93,8 +111,12 @@ const useProfileControls = () => {
     const BlockUser = async (_id: string, refetchKey: string) => {
         setIsLoading(true);
         try {
-            const { status} = await axiosInstance.post("/blocks", {
+            const { status } = await axiosInstance.post("/blocks", {
                 _id
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             })
             if (status === 200) {
                 handleRefetch(refetchKey);
@@ -112,6 +134,9 @@ const useProfileControls = () => {
             const { status } = await axiosInstance.delete('/blocks', {
                 data: {
                     _id
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
             });
             if (status === 200) {
@@ -124,7 +149,7 @@ const useProfileControls = () => {
         }
     }
 
-    
+
     return {
         isLoading,
         sendFriendRequest,

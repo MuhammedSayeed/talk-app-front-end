@@ -11,16 +11,18 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useCookies from './useCookies';
+import useLocalStorage from './useLocalStorage';
+import useToken from './useToken';
 
 const useUpdateUsernameForSocialUsers = () => {
     const { user, updateUserState } = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(false);
-    const {setToken} = useCookies();
-
+    const { setToken } = useCookies();
+    const { setOnLocalStorage } = useLocalStorage();
     const { register, resetField, handleSubmit, watch, formState: { errors } } = useForm({
         resolver: yupResolver(updateUsernameSchemaForSocialUsers)
     })
-
+    const { token } = useToken();
     const currentUserNameValue = watch('username');
     const isUserNameChanged = currentUserNameValue !== user?.username;
 
@@ -28,10 +30,15 @@ const useUpdateUsernameForSocialUsers = () => {
         async (updateUsernameData: IUpdateUsernameFormData) => {
             setIsLoading(true)
             try {
-                const { data, status } = await axiosInstance.patch(`/users/username`, updateUsernameData)
+                const { data, status } = await axiosInstance.patch(`/users/username`, updateUsernameData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
                 if (status === 200) {
                     updateUserState("username", data.results.username)
                     setToken(data.results.token)
+                    setOnLocalStorage("token", data.results.token)
                 }
             } catch (error) {
                 const errorObj = error as AxiosError<IErrorResponse>;
@@ -40,7 +47,7 @@ const useUpdateUsernameForSocialUsers = () => {
                 setIsLoading(false)
             }
         },
-        [setIsLoading, updateUserState],
+        [setIsLoading, updateUserState , token],
     )
 
     const onSubmit = async (data: { username: string }) => {
@@ -60,7 +67,7 @@ const useUpdateUsernameForSocialUsers = () => {
 
 
     return {
-        register ,
+        register,
         onSubmit,
         isLoading,
         handleSubmit,
