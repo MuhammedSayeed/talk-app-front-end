@@ -24,7 +24,7 @@ const ChatBox = () => {
 
 
     return (
-        <div className={clsx("fixed z-[100] inset-0 w-full bg-bg-color grid grid-rows-[auto_1fr_auto] h-screen md:border md:border-primary-lighter md:z-auto md:static md:translate-x-0 md:h-full md:rounded-lg transition-transform duration-300", isOpen ? "translate-x-0" : "translate-x-full")}>
+        <div className={clsx("absolute z-[100] inset-0 w-full bg-bg-color grid grid-rows-[auto_1fr_auto] h-screen md:border md:border-primary-lighter md:z-auto md:static md:translate-x-0 md:h-full md:rounded-lg transition-transform duration-300", isOpen ? "translate-x-0" : "translate-x-full")}>
             <ChatHeader />
             <MessagesSection />
             {isBlockedByYou && <BlockedByYou friendId = {friendInfo?._id}/>}
