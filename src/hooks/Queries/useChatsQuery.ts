@@ -23,7 +23,7 @@ export const useChatsQuery = (userId: string | undefined, searchTerm: string) =>
         getNextPageParam: (lastpage) => {
             return lastpage.metadata.hasNextPage ? lastpage.metadata.page + 1 : undefined
         },
-        enabled: (!!userId && !!token),
+        enabled: (!!token && !!userId),
         staleTime: 0,
         gcTime: 0,
         refetchOnMount: true,
