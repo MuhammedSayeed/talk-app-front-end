@@ -8,6 +8,9 @@ const socket = io(process.env.NEXT_PUBLIC_ONLINE_API, {
     autoConnect: false
 });
 
+console.log("11" , process.env.NEXT_PUBLIC_ONLINE_API);
+
+
 interface UserProfileState {
     socket: typeof socket;
     isConnected: boolean;
