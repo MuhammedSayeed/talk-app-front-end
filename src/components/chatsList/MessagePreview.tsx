@@ -10,6 +10,7 @@ interface Props {
     isFromLoggedInUser: boolean
 }
 const MessagePreview = ({ message, isFromLoggedInUser }: Props) => {
+    
     const { truncateText } = useUtilts();
     const isUnReadMessage = !isFromLoggedInUser && !message.isRead;
 

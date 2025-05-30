@@ -38,7 +38,7 @@ const FriendsList = () => {
                 </h1>
                 <div className="border border-white/20 flex items-center gap-1 pl-2 rounded-lg remove-outline bg-transparent">
                     <IoSearch className="text-white/50" size={25} />
-                    <Input onChange={handleSearchChange} className="!bg-transparent py-6 px-0 border-none text-white/50 font-medium placeholder:text-white/50 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search for a chat" />
+                    <Input onChange={handleSearchChange} className="!bg-transparent py-6 px-0 border-none text-white/50 font-medium placeholder:text-white/50 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" placeholder="Search for a friend" />
                 </div>
             </div>
             <div className=" relative w-full h-full max-h-full">

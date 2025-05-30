@@ -15,10 +15,11 @@ const useMessageInput = () => {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const { isTypingRef, sendTypingEvent } = useTypingIndicator();
     const [message, setMessage] = useState("");
+    const [isLoading , setIsLoading] = useState(false);
     const { handleError } = useUtilts()
     const { token } = useToken();
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newMessage = e.target.value;
         setMessage(newMessage);
         if (newMessage.length > 0 && !isTypingRef.current) {
@@ -60,6 +61,7 @@ const useMessageInput = () => {
     }
     const sendMessageApiCall = async (message: Message) => {
         const { body, headers, urlQuery } = prepareMessageRequest(message);
+        setIsLoading(true)
         try {
             const { status } = await axiosInstance.post(`/messages${urlQuery}`, body, {
                 headers
@@ -69,20 +71,20 @@ const useMessageInput = () => {
             }
         } catch (error) {
             handleError(error);
+        }finally{
+            setIsLoading(false);
         }
     }
     const handleSendMessage = useCallback(async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const content = message.trim();
         if (!content || !activeChat?._id) return;
-
+        setMessage("");
         await sendMessageApiCall({
             chat: activeChat._id,
             type: "text",
             content: content
-        }).then(() => {
-            setMessage("");
-        });
+        })
     }, [activeChat?._id, message]);
     const handleButtonClick = () => {
         if (fileInputRef.current) {
@@ -119,7 +121,8 @@ const useMessageInput = () => {
         fileInputRef,
         handleButtonClick,
         handleSendMessage,
-        message
+        message,
+        isLoading
     }
 }
 

@@ -19,10 +19,10 @@ const useUploadProfilePicture = () => {
         }
     };
 
-    
+
 
     const uploadProfilePicture = useCallback(async (formData: FormData) => {
-        if (!user?._id || token) return
+        if (!user?._id || !token) return
 
         setIsLoading(true)
         try {
@@ -43,7 +43,7 @@ const useUploadProfilePicture = () => {
             setIsLoading(false);
         }
     },
-        [setIsLoading, updateUserState, user?._id , token],
+        [setIsLoading, updateUserState, user?._id, token],
     )
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];

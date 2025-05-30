@@ -48,9 +48,9 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
             if (status === 200) {
                 setUser(data.results.user)
             }
-        } catch (error) {
+        } catch{
             router.push("/login")
-            handleError(error)
+
         } finally {
             setIsLoading(false)
         }
@@ -64,8 +64,7 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
                     Authorization: `Bearer ${token}`
                 },
             });
-        } catch (error) {
-            handleError(error)
+        } catch{
         }
     }
     // Check if the current path is private and requires authentication

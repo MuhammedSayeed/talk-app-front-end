@@ -13,7 +13,7 @@ const ForgotPasswordForm = () => {
 
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4   ">
             <div>
                 <label htmlFor="email-input-reset-password" className="text-[16px]">Email</label>
                 <Input {...register("email")} id="email-input-reset-password" type="email" className="px-4 py-5 text-base md:text-lg mt-2" />

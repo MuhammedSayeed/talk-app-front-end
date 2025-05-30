@@ -1,6 +1,5 @@
 import { AuthContext } from "@/context/auth/AuthContext";
 import { useContext, useEffect, useState } from "react";
-import useUtilts from "./useUtilts";
 import useNotificationsModalStore from "@/lib/store/NotificationsModalStore";
 import useCustomQuery from "./useCustomQuery";
 import axiosInstance from "@/config/axios";
@@ -9,7 +8,6 @@ import useToken from "./useToken";
 
 const useNotifications = () => {
     const { user } = useContext(AuthContext);
-    const { handleError } = useUtilts();
     const { isOpen, toggleModal } = useNotificationsModalStore();
     const [count, setCount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -32,8 +30,7 @@ const useNotifications = () => {
             if (status === 200) {
                 setCount(0);
             }
-        } catch (error) {
-            handleError(error);
+        } catch{
         } finally {
             setIsLoading(false);
         }

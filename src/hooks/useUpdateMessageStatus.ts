@@ -2,7 +2,6 @@
 
 import { AuthContext } from "@/context/auth/AuthContext";
 import { useContext } from "react";
-import useUtilts from "./useUtilts";
 import { IChat } from "@/interfaces/chat";
 import axiosInstance from "@/config/axios";
 import useToken from "./useToken";
@@ -14,7 +13,6 @@ interface IProps {
 
 const useUpdateMessageStatus = ({ setChats }: IProps) => {
     const { user } = useContext(AuthContext);
-    const { handleError } = useUtilts();
     const {token} = useToken();
     const updateMessageStatusInChat = (chatId: string) => {
         setChats((prev) => {
@@ -45,8 +43,7 @@ const useUpdateMessageStatus = ({ setChats }: IProps) => {
             if (status === 200) {
                 // updateMessageStatusInChat(chatId);
             }
-        } catch (error) {
-            handleError(error)
+        } catch{
         }
     }
 

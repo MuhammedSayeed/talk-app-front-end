@@ -7,11 +7,9 @@ import UserCard from "@/components/search/UserCard";
 import UserCardSkeleton from "@/components/skeleton/UserCard";
 import useInfiniteScroll from "./useInfiniteScroll";
 import Message from "@/components/ui/messages/Message";
-import useUtilts from "./useUtilts";
 import useToken from "./useToken";
 
 const useSearchModal = () => {
-    const { handleError } = useUtilts();
     const { isOpen, toggleModal } = useSearchModalStore();
     const [isLoading, setIsLoading] = useState(false);
     const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
@@ -40,8 +38,7 @@ const useSearchModal = () => {
                 setHasNextPage(data.metadata.hasNextPage);
                 setPage(data.metadata.page);
             }
-        } catch (error) {
-            handleError(error);
+        } catch{
 
         } finally {
             setIsLoading(false)

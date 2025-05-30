@@ -15,7 +15,7 @@ const useUploadCoverPicture = () => {
   const {token} = useToken();
   const uploadCoverPicture = useCallback(
     async (formData: FormData) => {
-      if (!user?._id || token) return
+      if (!user?._id || !token) return
       setIsLoading(true)
       try {
         const { data, status } = await axiosInstance.patch(`/users/upload-cover-pic?folder=cover-pics/${user._id}`, formData,

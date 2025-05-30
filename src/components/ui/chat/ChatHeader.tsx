@@ -11,11 +11,12 @@ import Status from './Status/Status'
 
 const ChatHeader = () => {
     const { toggleChatBox } = useChatBoxStore();
-    const { isChatLoading, friendInfo , blockInfo } = useContext(ChatContext);
+    const { isChatLoading, friendInfo, blockInfo, setActiveChat } = useContext(ChatContext);
     const { toggleChatInfoModal } = useChatInfoModalStore();
 
     const closeChatBox = () => {
         toggleChatBox();
+        setActiveChat(null)
     }
 
     const handleOpenChatInfo = () => {
@@ -37,7 +38,7 @@ const ChatHeader = () => {
                 </div>
                 <div className="flex flex-col">
                     <span className="text-xl text-gray-100 font-medium">{friendInfo?.name}</span>
-                    {!blockInfo && <Status/>}
+                    {!blockInfo && <Status />}
                 </div>
             </div>
             <div className="flex items-center gap-3">

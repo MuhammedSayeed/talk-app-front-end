@@ -4,14 +4,12 @@ import axiosInstance from "@/config/axios";
 import { AuthContext } from "@/context/auth/AuthContext";
 import { ChatContext } from "@/context/chat/ChatContext";
 import { useContext, useEffect, useRef } from "react";
-import useUtilts from "./useUtilts";
 import useToken from "./useToken";
 
 
 const useTypingIndicator = () => {
     const { user } = useContext(AuthContext)
     const { activeChat } = useContext(ChatContext)
-    const { handleError } = useUtilts();
     const { token } = useToken();
 
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -32,8 +30,7 @@ const useTypingIndicator = () => {
                 }
             })
 
-        } catch (error) {
-            handleError(error)
+        } catch{
         }
     }
 

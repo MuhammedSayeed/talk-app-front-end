@@ -33,8 +33,7 @@ const useFriendRequests = () => {
             if (status === 200) {
                 setCount(0);
             }
-        } catch (error) {
-            handleError(error);
+        } catch{
         } finally {
             setIsLoading(false);
         }
