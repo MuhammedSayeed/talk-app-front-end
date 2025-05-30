@@ -12,7 +12,7 @@ export const formatTime = (createdAt: string)=>{
     if (isToday(createdDate)) return format(createdDate , "h:mm a");
     if (isYesterday(createdDate)) return `Yesterday, ${format(createdDate, "h:mm a")}`;
 
-    return format(createdDate, "dd/MM/yyyy, h:mm a");
+    return format(createdDate, "dd/MM/yyyy");
 }
 
 export const formatTimeDifferentForm = (createdAt: string , showDay : boolean = false)=>{

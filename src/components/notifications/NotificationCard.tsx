@@ -5,9 +5,8 @@ import { formatTime } from '@/lib/timeFormat'
 
 const NotificationCard = ({ acceptedBy, createdAt }: INotificationCard) => {
     const formattedTime = formatTime(createdAt)
-
     return (
-        <div className="w-full bg-white/5 hover:bg-white/10 transition-colors p-4 rounded-md">
+        <div className="w-full bg-white/5 hover:bg-white/10 transition-colors px-2 py-4 sm:p-4 rounded-md">
             <div className="flex items-start justify-between ">
                 <div className="flex items-center gap-3">
                     <Avatar image={acceptedBy.profilePic.src || "https://res.cloudinary.com/dndjbkrcv/image/upload/v1744827248/ChatGPT-Image-Apr-16_-2025_-08_12_29-PM_fd12kf.png"} name="dummy" />
@@ -17,7 +16,7 @@ const NotificationCard = ({ acceptedBy, createdAt }: INotificationCard) => {
                     </div>
                 </div>
                 <div className="text-gray-400 ">
-                    <span className="text-sm">{formattedTime}</span>
+                    <span className="text-xs">{formattedTime}</span>
                 </div>
             </div>
         </div>
