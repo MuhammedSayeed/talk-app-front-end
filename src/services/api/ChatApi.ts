@@ -56,8 +56,7 @@ export class ChatApi {
             })
             if (status === 200) return data?.results.chat
             return null
-        } catch (error) {
-            console.log(error);
+        } catch{
             return null
         }
     }

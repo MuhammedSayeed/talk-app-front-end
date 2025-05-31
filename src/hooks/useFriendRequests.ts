@@ -3,7 +3,6 @@ import useCustomQuery from "./useCustomQuery";
 import { AuthContext } from "@/context/auth/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import axiosInstance from "@/config/axios";
-import useUtilts from "./useUtilts";
 import { useSocketStore } from "@/lib/store/useSocketStore";
 import useToken from "./useToken";
 
@@ -13,7 +12,6 @@ const useFriendRequests = () => {
     const { isOpen, toggleModal } = useFriendRequestModalStore();
     const { user } = useContext(AuthContext);
     const { on, off } = useSocketStore();
-    const { handleError } = useUtilts();
     const { token } = useToken();
     const { data, refetch } = useCustomQuery({
         queryKey: ["unread-friend-requests", `${isOpen}`],

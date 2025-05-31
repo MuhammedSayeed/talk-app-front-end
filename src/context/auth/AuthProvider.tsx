@@ -4,7 +4,6 @@ import { AuthContext } from "./AuthContext"
 import { useCallback, useEffect, useState } from "react"
 import axiosInstance from "@/config/axios"
 import { usePathname, useRouter } from "next/navigation"
-import useUtilts from "@/hooks/useUtilts"
 import { AUTH_CONFIG } from "@/constants/routes"
 import { IUser } from "@/interfaces/auth"
 import useToken from "@/hooks/useToken"
@@ -17,7 +16,6 @@ interface IAuthProviderProps {
 export const AuthProvider = ({ children }: IAuthProviderProps) => {
     const pathname = usePathname()
     const router = useRouter();
-    const { handleError } = useUtilts();
     const { token } = useToken();
 
 
