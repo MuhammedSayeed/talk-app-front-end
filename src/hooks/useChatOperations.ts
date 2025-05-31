@@ -2,35 +2,42 @@ import { IChat, IChatUser } from "@/interfaces/chat"
 import useChatBoxStore from "@/lib/store/ChatBoxStore"
 import useDeleteChatModalStore from "@/lib/store/DeleteChatModalStore"
 import { ChatApi } from "@/services/api/ChatApi"
-import { useCallback } from "react"
+import { useCallback, useContext } from "react"
 import useUpdateMessageStatus from "./useUpdateMessageStatus"
 import useUtilts from "./useUtilts"
 import useToken from "./useToken"
+import { AuthContext } from "@/context/auth/AuthContext"
 
 
 interface UseChatOperationsProps {
-  isChatSelected: (id: string) => boolean
   setActiveChat: (chat: IChat | null) => void
   setFriendInfo: (user: IChatUser | null) => void
   setIsChatLoading: (loading: boolean) => void
   setIsLoading: (loading: boolean) => void
-  setChats: (updater: (prev: IChat[] | null) => IChat[] | null) => void
+  setChats: (updater: (prev: IChat[] | null) => IChat[] | null) => void,
+  activeChat: IChat | null
 }
 
 /**
  * Hook for chat operations like create and delete .. etc
  */
-export const useChatOperations = ({ isChatSelected, setActiveChat, setFriendInfo, setIsChatLoading, setIsLoading, setChats }: UseChatOperationsProps) => {
-  const { toggleChatBox } = useChatBoxStore();
+export const useChatOperations = ({ activeChat, setActiveChat, setFriendInfo, setIsChatLoading, setIsLoading, setChats }: UseChatOperationsProps) => {
+  const { isOpen: isChatBoxOpen, toggleChatBox } = useChatBoxStore();
   const { isOpen, toggleDeleteChatModal } = useDeleteChatModalStore()
   const { markMessageAsRead, updateMessageStatusInChat } = useUpdateMessageStatus({ setChats });
   const { handleError } = useUtilts();
   const { token } = useToken();
+  const { user } = useContext(AuthContext);
+
+  const isChatSelected = (_id: string) => {
+    const friendId = activeChat?.users?.find((u) => u._id !== user?._id) || null
+    return friendId?._id === _id
+  }
 
   const createOrGetChat = useCallback(async (_id: string) => {
     if (!token) return;
-    toggleChatBox()
-    if (isChatSelected(_id)) return
+    if (isChatSelected(_id)) return;
+    if (!isChatBoxOpen) toggleChatBox()
     setIsChatLoading(true)
     try {
       const chat = await ChatApi.createOrGetChat(_id, token)

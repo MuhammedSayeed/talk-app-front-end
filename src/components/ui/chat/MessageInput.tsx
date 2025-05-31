@@ -8,7 +8,7 @@ import useMessageInput from '@/hooks/useMessageInput'
 
 
 const MessageInput = () => {
-  const { handleInputChange, handleFileChange, fileInputRef, handleButtonClick, handleSendMessage, message, isLoading } = useMessageInput();
+  const { handleInputChange, handleFileChange, fileInputRef, handleButtonClick, handleSendMessage, message, isLoading, textareaRef } = useMessageInput();
 
 
   return (
@@ -20,6 +20,7 @@ const MessageInput = () => {
       <form onSubmit={(e) => handleSendMessage(e)} className='flex flex-1 gap-2 h-full justify-between items-center '>
         <div className="flex-1 remove-outline ">
           <textarea
+            ref={textareaRef}
             value={message}
             onChange={handleInputChange}
             placeholder="Send a message"

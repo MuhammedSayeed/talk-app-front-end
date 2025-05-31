@@ -65,17 +65,10 @@ export const ChatProvider = ({ children }: IChatProviderProps) => {
         return ChatUtils.extractFriendInfo(chat, user?._id as string)
     }, [user?._id])
 
-    // Check if a user is selected in the active chat
-    const isChatSelected = useCallback(
-        (_id: string) => {
-            const friendId = extractFriendInfo(activeChat)?._id
-            return friendId === _id
-        },
-        [activeChat, extractFriendInfo],
-    )
+  
 
     // Chat operations
-    const { createOrGetChat, deleteChat } = useChatOperations({ isChatSelected, setActiveChat, setFriendInfo, setIsChatLoading, setIsLoading, setChats })
+    const { createOrGetChat, deleteChat } = useChatOperations({activeChat, setActiveChat, setFriendInfo, setIsChatLoading, setIsLoading, setChats })
 
     // Fetch new chat
     const { fetchNewChat } = useFetchNewChat(setChats)
@@ -147,7 +140,6 @@ export const ChatProvider = ({ children }: IChatProviderProps) => {
                 isChatLoading,
                 friendInfo,
                 setIsChatLoading,
-                isChatSelected,
                 extractFriendInfo,
                 createOrGetChat,
                 deleteChat,

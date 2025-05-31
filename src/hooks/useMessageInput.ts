@@ -11,6 +11,7 @@ import useUtilts from "./useUtilts";
 import useToken from "./useToken";
 
 const useMessageInput = () => {
+    const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const { activeChat } = useContext(ChatContext);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const { isTypingRef, sendTypingEvent } = useTypingIndicator();
@@ -80,6 +81,7 @@ const useMessageInput = () => {
         const content = message.trim();
         if (!content || !activeChat?._id) return;
         setMessage("");
+        if (textareaRef.current) textareaRef.current.style.height = "auto";
         await sendMessageApiCall({
             chat: activeChat._id,
             type: "text",
@@ -122,7 +124,8 @@ const useMessageInput = () => {
         handleButtonClick,
         handleSendMessage,
         message,
-        isLoading
+        isLoading,
+        textareaRef
     }
 }
 

@@ -13,7 +13,6 @@ interface IChatContext {
     activeChat: IChat | null
     isChatLoading: boolean
     setIsChatLoading: Dispatch<SetStateAction<boolean>>
-    isChatSelected: (_id: string) => boolean
     friendInfo: IChatUser | null
     extractFriendInfo: (chat: IChat | null) => IChatUser | null
     createOrGetChat: (_id: string) => Promise<void>
@@ -43,7 +42,6 @@ export const ChatContext = createContext<IChatContext>({
     activeChat: null,
     isChatLoading: false,
     setIsChatLoading: () => { },
-    isChatSelected: (_id: string) => false,
     friendInfo: null,
     extractFriendInfo: (chat: IChat | null) => null,
     createOrGetChat: async (_id: string) => { },
