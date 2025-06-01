@@ -1,8 +1,8 @@
 import useProfileControls from "@/hooks/useProfileControls";
-import { Button } from "../../button";
 import toast from "react-hot-toast";
 import { useContext } from "react";
 import { ChatContext } from "@/context/chat/ChatContext";
+import { Button } from "@/components/ui/button";
 
 const BlockedByYou = ({ friendId }: { friendId: string | undefined }) => {
 

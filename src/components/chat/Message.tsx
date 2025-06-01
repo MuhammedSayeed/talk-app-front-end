@@ -1,11 +1,11 @@
 "use client"
 import { IMessage } from "@/interfaces/message"
 import clsx from "clsx"
-import Avatar from "../Avatar"
 import { useContext } from "react"
 import { ChatContext } from "@/context/chat/ChatContext"
 import { format } from "date-fns";
 import Image from "next/image"
+import Avatar from "../ui/Avatar"
 
 
 interface IProps {

@@ -10,9 +10,11 @@ import {
 import { Shield, ShieldOff } from 'lucide-react';
 import useProfileControls from '@/hooks/useProfileControls';
 import toast from 'react-hot-toast';
+import { AuthContext } from '@/context/auth/AuthContext';
 
 const BlockButtons = () => {
     const { friendInfo, blockInfo } = useContext(ChatContext);
+    const {user} = useContext(AuthContext);
     const { isLoading, BlockUser , unBlock } = useProfileControls();
     const handleBlockUser = () => {
         if (isLoading) return;
@@ -32,6 +34,8 @@ const BlockButtons = () => {
         })
     }
 
+    
+
     if (blockInfo === null) {
         return (
             <TooltipProvider>
@@ -49,20 +53,26 @@ const BlockButtons = () => {
         )
     }
 
-    return (
-        <TooltipProvider>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button onClick={handleUnblockUser} variant={"outline"} size={"icon"} className="p-6 cursor-pointer">
-                        <ShieldOff className="size-5.5" />
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent className="z-[99999] font-medium">
-                    <p>Unblock user</p>
-                </TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
-    )
+    if (blockInfo.blocker === user?._id){
+
+        return (
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button onClick={handleUnblockUser} variant={"outline"} size={"icon"} className="p-6 cursor-pointer">
+                            <ShieldOff className="size-5.5" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent className="z-[99999] font-medium">
+                        <p>Unblock user</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+        )
+    }
+
+    return null
+
 }
 
 export default BlockButtons

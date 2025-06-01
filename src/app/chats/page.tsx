@@ -5,9 +5,9 @@ import { ChatContext } from "@/context/chat/ChatContext"
 import dynamic from "next/dynamic"
 // Static Components
 import EmptyState from "@/components/ui/EmptyState"
-import { TabsSwitch } from "@/components/ui/Tabs/Tabs"
-import TabsContent from "@/components/ui/Tabs/TabsContent"
-import ChatBox from "@/components/ui/chat/ChatBox"
+import { TabsSwitch } from "@/components/Tabs/Tabs"
+import TabsContent from "@/components/Tabs/TabsContent"
+import ChatBox from "@/components/chat/ChatBox"
 // Dynamic Components
 const OnBoardingModal = dynamic(() => import('@/components/onBoarding/OnBoardingModal'), { ssr: false })
 const ChatInfo = dynamic(() => import('@/components/chatInfo/ChatInfo'), { ssr: false })

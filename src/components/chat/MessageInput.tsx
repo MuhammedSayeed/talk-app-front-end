@@ -1,8 +1,8 @@
 "use client"
-import { Input } from '../input'
-import { Button } from '../button'
 import { ImagePlus, SendHorizontal } from 'lucide-react'
 import useMessageInput from '@/hooks/useMessageInput'
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
 
 
 

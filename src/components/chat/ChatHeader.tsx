@@ -1,17 +1,17 @@
 "use client"
 import { MdArrowBackIos } from 'react-icons/md'
 import { BsThreeDotsVertical } from 'react-icons/bs'
-import Avatar from '../Avatar'
 import { useContext } from 'react'
 import { ChatContext } from '@/context/chat/ChatContext'
 import ChatHeaderSkeleton from '@/components/skeleton/ChatHeader'
 import useChatBoxStore from '@/lib/store/ChatBoxStore'
 import useChatInfoModalStore from '@/lib/store/ChatInfoModalStore'
 import Status from './Status/Status'
+import Avatar from '../ui/Avatar'
 
 const ChatHeader = () => {
     const { toggleChatBox } = useChatBoxStore();
-    const { isChatLoading, friendInfo, blockInfo, setActiveChat } = useContext(ChatContext);
+    const { isChatLoading, friendInfo, blockInfo, setActiveChat  } = useContext(ChatContext);
     const { toggleChatInfoModal } = useChatInfoModalStore();
 
     const closeChatBox = () => {

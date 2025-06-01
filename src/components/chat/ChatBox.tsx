@@ -21,6 +21,7 @@ const ChatBox = () => {
     const isBlockedByYou = blockInfo?.blocked === friendInfo?._id && blockInfo?.blocker === user?._id;
     const isBlockedByFriend = blockInfo?.blocked === user?._id && blockInfo?.blocker === friendInfo?._id;
 
+    console.log(blockInfo);
     
 
 

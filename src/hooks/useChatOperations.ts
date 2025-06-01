@@ -2,11 +2,12 @@ import { IChat, IChatUser } from "@/interfaces/chat"
 import useChatBoxStore from "@/lib/store/ChatBoxStore"
 import useDeleteChatModalStore from "@/lib/store/DeleteChatModalStore"
 import { ChatApi } from "@/services/api/ChatApi"
-import { useCallback, useContext } from "react"
+import { Dispatch, SetStateAction, useCallback, useContext } from "react"
 import useUpdateMessageStatus from "./useUpdateMessageStatus"
 import useUtilts from "./useUtilts"
 import useToken from "./useToken"
 import { AuthContext } from "@/context/auth/AuthContext"
+import { IBlockInfo } from "@/interfaces/block"
 
 
 interface UseChatOperationsProps {
@@ -15,13 +16,15 @@ interface UseChatOperationsProps {
   setIsChatLoading: (loading: boolean) => void
   setIsLoading: (loading: boolean) => void
   setChats: (updater: (prev: IChat[] | null) => IChat[] | null) => void,
-  activeChat: IChat | null
+  activeChat: IChat | null,
+  blockInfo: IBlockInfo | null,
+  setBlockInfo: Dispatch<SetStateAction<IBlockInfo | null>>
 }
 
 /**
  * Hook for chat operations like create and delete .. etc
  */
-export const useChatOperations = ({ activeChat, setActiveChat, setFriendInfo, setIsChatLoading, setIsLoading, setChats }: UseChatOperationsProps) => {
+export const useChatOperations = ({ activeChat, setActiveChat, setFriendInfo, setIsChatLoading, setIsLoading, setChats, blockInfo , setBlockInfo }: UseChatOperationsProps) => {
   const { isOpen: isChatBoxOpen, toggleChatBox } = useChatBoxStore();
   const { isOpen, toggleDeleteChatModal } = useDeleteChatModalStore()
   const { markMessageAsRead, updateMessageStatusInChat } = useUpdateMessageStatus({ setChats });
@@ -38,6 +41,7 @@ export const useChatOperations = ({ activeChat, setActiveChat, setFriendInfo, se
     if (!token) return;
     if (isChatSelected(_id)) return;
     if (!isChatBoxOpen) toggleChatBox()
+    setBlockInfo(null)
     setIsChatLoading(true)
     try {
       const chat = await ChatApi.createOrGetChat(_id, token)
@@ -52,7 +56,7 @@ export const useChatOperations = ({ activeChat, setActiveChat, setFriendInfo, se
       setIsChatLoading(false)
     }
 
-  }, [isChatSelected, setActiveChat, setIsChatLoading, toggleChatBox, token])
+  }, [isChatSelected, setActiveChat, setIsChatLoading, toggleChatBox, token, blockInfo])
 
   const deleteChat = useCallback(
     async (_id: string) => {

@@ -30,7 +30,7 @@ export default async function Home() {
 
   return (
     <div className="h-screen w-full flex flex-col justify-center items-center gap-y-5">
-      <div className="relative w-[350px] h-[100px]">
+      <div className="relative w-[250px] h-[100px] sm:w-[350px] sm:h-[100px]">
         <Image src={logo_light_theme} alt="talk-logo" fill priority quality={100} style={{ objectFit: 'contain' }} sizes="350px" />
       </div>
       <p className="text-center text-sm font-medium text-gray-150">

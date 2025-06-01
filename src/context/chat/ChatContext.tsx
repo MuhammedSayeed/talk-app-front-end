@@ -32,7 +32,7 @@ interface IChatContext {
     setShouldScrollToBottom: Dispatch<SetStateAction<boolean>>
     scrollContainerRef: RefObject<HTMLDivElement | null>
     searchTerm: string
-    setSearchTerm: Dispatch<SetStateAction<string>>
+    setSearchTerm: Dispatch<SetStateAction<string>>,
 }
 
 export const ChatContext = createContext<IChatContext>({

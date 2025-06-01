@@ -1,6 +1,6 @@
 
 import { motion } from 'framer-motion';
-import Avatar from '../Avatar';
+import Avatar from '../ui/Avatar';
 import { ChatContext } from '@/context/chat/ChatContext';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '@/context/auth/AuthContext';

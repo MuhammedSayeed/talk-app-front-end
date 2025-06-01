@@ -70,7 +70,7 @@ export const useMessageHandlers = ({ activeChat, fetchNewChat, scrollToBottom, s
 
     const handleBlockEvent = useCallback(
         (data: IBlockUserEvent) => {
-            setBlockInfo(data.blockStatus ? data.blockInfo : null)
+            setBlockInfo(data.blockStatus === true ? data.blockInfo : null)
         },
         [setBlockInfo],
     )

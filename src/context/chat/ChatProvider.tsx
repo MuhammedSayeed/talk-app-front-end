@@ -53,9 +53,14 @@ export const ChatProvider = ({ children }: IChatProviderProps) => {
     const messagesQuery = useMessagesQuery(activeChat?._id)
     const blockData = useBlockInfoQuery(activeChat?._id, friendInfo?._id)
 
+
+
+
     // Destructure query results
     const { data: chatsData, isLoading: isChatsLoading, hasNextPage: hasNextChatsPage, isFetchingNextPage: isFetchingNextChatsPage, fetchNextPage: fetchNextChatsPage } = chatsQuery
     const { data: messagesData, isLoading: isMessagesLoading, hasNextPage: hasNextMessagesPage, isFetchingNextPage: isFetchingNextMessagesPage, fetchNextPage: fetchNextMessagesPage, } = messagesQuery
+
+
 
     // Scroll handling
     const { scrollToBottom } = useScrollToBottom(messagesEndRef)
@@ -65,10 +70,9 @@ export const ChatProvider = ({ children }: IChatProviderProps) => {
         return ChatUtils.extractFriendInfo(chat, user?._id as string)
     }, [user?._id])
 
-  
 
     // Chat operations
-    const { createOrGetChat, deleteChat } = useChatOperations({activeChat, setActiveChat, setFriendInfo, setIsChatLoading, setIsLoading, setChats })
+    const { createOrGetChat, deleteChat } = useChatOperations({ activeChat, setActiveChat, setFriendInfo, setIsChatLoading, setIsLoading, setChats, blockInfo , setBlockInfo })
 
     // Fetch new chat
     const { fetchNewChat } = useFetchNewChat(setChats)
@@ -110,10 +114,8 @@ export const ChatProvider = ({ children }: IChatProviderProps) => {
 
     // Set block info if exists when active chat changes
     useEffect(() => {
-        if (blockData) {
-            setBlockInfo(blockData)
-        }
-    }, [blockData])
+        setBlockInfo(blockData)
+    }, [blockData, setBlockInfo])
 
     return (
         <ChatContext.Provider
