@@ -7,10 +7,10 @@ import { FaPlus } from 'react-icons/fa6';
 
 const DefaultProfileActions = () => {
 
-    const { isLoading, sendFriendRequest , BlockUser } = useProfileControls();
-    const {profile} = useUserProfileStore();
+    const { isLoading, sendFriendRequest, BlockUser } = useProfileControls();
+    const { profile } = useUserProfileStore();
     const handleSendFriendRequest = async () => {
-        await sendFriendRequest(profile?.user._id as string , "user-profile")
+        await sendFriendRequest(profile?.user._id as string, "user-profile")
     }
     const handleBlockUser = async () => {
         await BlockUser(profile?.user._id as string, "user-profile");
